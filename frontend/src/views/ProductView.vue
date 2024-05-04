@@ -5,7 +5,7 @@ export default {
   data() {
     return {
       navHeight: 0,
-      counter: 0
+      counter: 1
     };
   },
   components: {
@@ -39,12 +39,14 @@ export default {
 <template>
   <navigation />
   <section class="hero py-5">
-    <div class="container py-5">
+    <div class=" py-5">
       <div class="container product">
-        <div class="d-flex justify-content-center">
-          <img src="../assets/img/products/udeng/udeng1.jpeg" class="pro-img mx-5 shadow" alt="" />
-          <div class="d-flex align-items-center justify-content-evenly title py-3">
-            <div class="name">
+        <div class="row gx-5">
+          <div class="col-md-4 col-12">
+            <img src="../assets/img/products/udeng/udeng1.jpeg" class="pro-img  shadow w-100" alt="" />
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="name pt-5">
               <h1>Udeng Putih Sutra</h1>
               <div class="star d-flex my-4">
                 <i class="bi bi-star-fill"></i>
@@ -57,11 +59,11 @@ export default {
                 <span>Rp. 150.000</span>
               </div>
             </div>
-            <h4>Stock : 30</h4>
+            <h4 class="text-end">Stock : 30</h4>
           </div>
         </div>
-        <div class="deskripsi py-4">
-          <h3>deskripsi</h3>
+        <div class="deskripsi mt-5 mb-4">
+          <h3>Deskripsi</h3>
           <div class="des-body">
             <h5>
               Udeng Batik Bali dengan Motif Bunga Eksotis. Udeng ini dibuat dengan teliti
@@ -107,7 +109,7 @@ export default {
 </template>
 <style scoped>
 .hero {
-  background-color: #fcf5ed;
+  /* background-color: #fcf5ed; */
   font-family: 'Poppins', serif;
 }
 
