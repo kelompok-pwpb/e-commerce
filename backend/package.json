@@ -9,7 +9,8 @@
     "start": "fastify start -l info  --ignore-watch=\"node_modules .git logs storage\" --watch ./dist/entryPlugin.js",
     "prisma:dev": "prisma generate & prisma db push",
     "lint": "eslint .",
-    "db:reset": "npx prisma db push --force-reset && npx prisma db seed"
+    "db:reset": "npx prisma db push --force-reset && npx prisma db seed",
+    "clean:img": "ts-node helper/clean-img.ts"
   },
   "keywords": [],
   "author": "",

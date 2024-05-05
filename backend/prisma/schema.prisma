@@ -85,11 +85,11 @@ model Review {
     rating Decimal @db.Decimal(10,2) 
 }
 
-model Expedition {
-    id Int @id @default(autoincrement())
-    name String  
-    Order Order[]
-}
+// model Expedition {
+//     id Int @id @default(autoincrement())
+//     name String  
+//     Order Order[]
+// }
 
 model Order{
     id Int @id @default(autoincrement()) 
@@ -98,7 +98,8 @@ model Order{
     count Int
     product Product? @relation(fields: [productId],references: [id],onDelete: SetNull)
     productId Int? 
-    expedition Expedition @relation(fields: [expeditionId],references: [id])
-    expeditionId Int
-    arrival DateTime @db.Timestamp()
+    status String @db.VarChar(60)
+    // expedition Expedition @relation(fields: [expeditionId],references: [id])
+    // expeditionId Int
+    // arrival DateTime @db.Timestamp()
 }

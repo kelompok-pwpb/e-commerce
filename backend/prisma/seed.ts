@@ -22,6 +22,7 @@ async function main() {
     await productInformation();
     await review();
     await createCart();
+    await order();
 }
 
 function getRandomInt(min: number, max: number) {
@@ -202,6 +203,38 @@ async function createCart() {
         }
     );
     await prisma.cart.createMany({
+        data: mapper,
+    });
+}
+
+async function order() {
+    const id = (
+        await prisma.user.findFirst({
+            where: {
+                email: process.env.USER_EMAIL,
+            },
+        })
+    )?.id;
+    const products = await prisma.product.findMany({
+        include: {
+            productInformation: true,
+        },
+    });
+
+    const mapper: getCreateMethodData<'order'> = Array.from(
+        { length: getRandomInt(5, 10) },
+        () => {
+            const product = products[getRandomInt(0, products.length - 1)];
+            return {
+                userId: id as number,
+                productId: product.id,
+                status: 'arrived',
+                count: getRandomInt(0, product.productInformation?.stock || 0),
+            };
+        }
+    );
+
+    await prisma.order.createMany({
         data: mapper,
     });
 }

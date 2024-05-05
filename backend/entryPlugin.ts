@@ -7,9 +7,11 @@ import { ResponseError } from '@schema/http';
 import {
     validatorCompiler,
     serializerCompiler,
+    ZodTypeProvider,
 } from 'fastify-type-provider-zod';
 import { ZodError } from 'zod';
 export default fp(async function (server: FastifyInstance) {
+    server.withTypeProvider<ZodTypeProvider>();
     server.addHook('onRoute', (requestOption) => {
         let method: string;
 
