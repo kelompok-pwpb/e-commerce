@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 import type { FastifyError, FastifyInstance } from 'fastify';
-import { Response, CreateResponseSchema } from '@schema/http';
+import { ResponseSchema, createResponseSchema } from '@schema/http';
 import bcrypt from 'bcrypt';
 import z, { ZodIssue } from 'zod';
 import {
@@ -26,15 +26,16 @@ async function register(server: FastifyInstance) {
         })
         .merge(
             z.object({
-                token: z.string(),
                 id: z.number(),
+                accessToken: z.string(),
+                refreshToken: z.string(),
             })
         );
 
     server.setValidatorCompiler(validatorCompiler);
     server.setSerializerCompiler(serializerCompiler);
     server.withTypeProvider<ZodTypeProvider>().route<{
-        Reply: Response<{
+        Reply: ResponseSchema<{
             data: z.infer<typeof createUserSchemaResponse>;
         }>;
         Body: z.infer<typeof createUserSchema>;
@@ -44,7 +45,7 @@ async function register(server: FastifyInstance) {
         schema: {
             body: createUserSchema,
             response: {
-                '2xx': CreateResponseSchema(createUserSchemaResponse),
+                '2xx': createResponseSchema(createUserSchemaResponse),
             },
         },
 
@@ -60,6 +61,16 @@ async function register(server: FastifyInstance) {
                     ),
                 },
             });
+
+            const token = await res.createToken({
+                id: result.id,
+                name: result.name,
+            });
+
+            res.setCookie('refreshToken', token.refreshToken, {
+                signed: true,
+                httpOnly: true,
+            });
             res.code(200).send({
                 success: true,
                 data: {
@@ -67,11 +78,13 @@ async function register(server: FastifyInstance) {
                         password: true,
                     }),
                     id: result.id,
-                    token: server.jwt.sign(req.body),
+                    ...token,
                 },
                 error: null,
                 message: 'success creating user',
             });
+
+            return res;
         },
     });
     server.addHook<{
@@ -93,22 +106,24 @@ async function register(server: FastifyInstance) {
     });
     server.setErrorHandler<
         FastifyError,
-        { Reply: Response<{ error: ZodIssue | FastifyError }> }
+        { Reply: ResponseSchema<{ error: ZodIssue | FastifyError }> }
     >((error, _, res) => {
         let errorMessage: ZodIssue | FastifyError;
         try {
-            errorMessage = JSON.parse(error.message ?? {}) as ZodIssue;
+            errorMessage = JSON.parse(error.message) as ZodIssue;
         } catch (err) {
             errorMessage = error;
         }
+        console.log(error);
         res.status(400).send({
             data: null,
             error: errorMessage,
+            code: 'ERROR_VALIDATION',
             message: 'Validation error',
             success: false,
         });
     });
 }
 export default fp(async (server: FastifyInstance) => {
-    await server.register(register);
+    server.register(register);
 });

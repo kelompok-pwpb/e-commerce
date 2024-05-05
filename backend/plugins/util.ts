@@ -45,6 +45,20 @@ const util = {
 
         return newObject as Pick<T, K>;
     },
+    transformArrayObject<T extends Record<string, unknown>>(
+        arr: T[],
+        key: keyof T
+    ) {
+        type supportedKey = string | number;
+        const newObj: Partial<Record<supportedKey, T>> = {};
+
+        for (let i = 0; i < arr.length; i++) {
+            const value = arr[i][key];
+            newObj[value as supportedKey] = arr[i];
+        }
+
+        return newObj as Record<supportedKey, T>;
+    },
 };
 
 declare module 'fastify' {

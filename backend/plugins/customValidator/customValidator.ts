@@ -15,6 +15,5 @@ declare module 'fastify' {
 }
 export default fp((server, _, done) => {
     server.decorate('zodCustomValidator', validator(server));
-
     done();
 });

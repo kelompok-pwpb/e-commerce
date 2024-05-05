@@ -5,33 +5,47 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && (concurrently \"tsc -w\" \"tsc-alias -w\" \"fastify start -l info  --watch ./dist/entryPlugin.js \" )",
-    "start": "nodemon --inspect  --enable-source-maps ./dist/main.js",
+    "build": "tsc && (concurrently \"tsc -w\" \"tsc-alias -w\" \"fastify start -l info  --watch ./dist/entryPlugin.js\")",
+    "start": "fastify start -l info  --ignore-watch=\"node_modules .git logs storage\" --watch ./dist/entryPlugin.js",
     "prisma:dev": "prisma generate & prisma db push",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:reset": "npx prisma db push --force-reset && npx prisma db seed"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "prisma": {
+    "seed": "ts-node prisma\\seed.ts"
+  },
   "dependencies": {
     "@fastify/autoload": "^5.8.0",
+    "@fastify/cookie": "^9.3.1",
+    "@fastify/error": "^3.4.1",
     "@fastify/jwt": "^8.0.0",
+    "@fastify/multipart": "^8.2.0",
     "@fastify/sensible": "^5.5.0",
+    "@fastify/static": "^7.0.3",
     "@prisma/client": "^5.12.1",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.12.7",
+    "app-root-path": "^3.1.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
     "fastify-plugin": "^4.5.1",
     "fastify-print-routes": "^3.1.1",
     "fastify-type-provider-zod": "^1.1.9",
+    "file-type": "^19.0.0",
+    "nanoid": "^5.0.7",
     "tsc-alias": "^1.8.8",
+    "yargs": "^17.7.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.2",
     "@eslint/js": "^9.1.1",
+    "@faker-js/faker": "^8.4.1",
+    "@types/yargs": "^17.0.32",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "concurrently": "^8.2.2",
@@ -44,6 +58,7 @@
     "globals": "^15.0.0",
     "nodemon": "^3.1.0",
     "prisma": "^5.12.1",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.7.1"
