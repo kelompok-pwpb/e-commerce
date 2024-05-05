@@ -111,13 +111,15 @@ import TreeSelect from 'primevue/treeselect';
 import TreeTable from 'primevue/treetable';
 import TriStateCheckbox from 'primevue/tristatecheckbox';
 import VirtualScroller from 'primevue/virtualscroller';
-
+import axios from 'axios';
 import BlockViewer from '@/components/BlockViewer.vue';
 
 import '@/assets/styles.scss';
 
 const app = createApp(App);
-
+console.log(import.meta.env.VITE_SERVER_URL);
+// import.meta.url.VITE_SERVER_URL
+axios.defaults.baseURL = import.meta.env.VITE_SERVER_URL;
 app.use(router);
 
 app.use(PrimeVue, { ripple: true });

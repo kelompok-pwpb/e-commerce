@@ -11,7 +11,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/user',
+      path: '/',
       component: UserView
     },
     {
@@ -40,6 +40,7 @@ const router = createRouter({
       component: () => import('@/views/pages/NotFound.vue')
     },
     {
+      path: '/admin',
       component: AppLayout,
       children: [
         {

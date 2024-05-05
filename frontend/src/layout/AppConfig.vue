@@ -117,7 +117,7 @@ const onFocusRingColorChange = (value) => {
 
 <template>
     <button class="layout-config-button p-link" type="button" @click="onConfigButtonClick()">
-        <i class="pi pi-cog"></i>
+        <i class="bi bi-arrow-left-right"></i>
     </button>
 
     <Sidebar v-model:visible="visible" position="right" class="layout-config-sidebar w-26rem" pt:closeButton="ml-auto">

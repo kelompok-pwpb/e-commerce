@@ -1,11 +1,29 @@
 <script setup>
 import { FilterMatchMode } from 'primevue/api';
-import { ref, onMounted, onBeforeMount } from 'vue';
+import { ref, defineModel, onMounted, onBeforeMount } from 'vue';
 import { ProductService } from '@/service/ProductService';
 import { useToast } from 'primevue/usetoast';
+import axios from 'axios';
 
+const insertForm = ref();
 const toast = useToast();
 
+const insertModel = ref({
+  name: '',
+  stock: 0,
+  price: 0,
+  category: '',
+  img: '',
+  description: ''
+});
+const handleOnchangeFile = (e) => {
+  var files = e.target.files || e.dataTransfer.files;
+  if (!files.length) return;
+
+  console.log(files[0]);
+  insertModel.value.img = files[0];
+};
+// const send =
 const products = ref(null);
 const productDialog = ref(false);
 const deleteProductDialog = ref(false);
@@ -61,38 +79,42 @@ const hideDialog = () => {
   productDialog.value = false;
   submitted.value = false;
 };
+const errorMapper = (error) => {
+  const obj = {};
+  error.forEach((e) => {
+    obj[e.path[0]] = e.message;
+  });
 
-const saveProduct = () => {
-  submitted.value = true;
-  if (product.value.name && product.value.name.trim() && product.value.price) {
-    if (product.value.id) {
-      product.value.inventoryStatus = product.value.inventoryStatus.value
-        ? product.value.inventoryStatus.value
-        : product.value.inventoryStatus;
-      products.value[findIndexById(product.value.id)] = product.value;
-      toast.add({
-        severity: 'success',
-        summary: 'Successful',
-        detail: 'Product Updated',
-        life: 3000
-      });
-    } else {
-      product.value.id = createId();
-      product.value.code = createId();
-      product.value.image = 'product-placeholder.svg';
-      product.value.inventoryStatus = product.value.inventoryStatus
-        ? product.value.inventoryStatus.value
-        : 'INSTOCK';
-      products.value.push(product.value);
-      toast.add({
-        severity: 'success',
-        summary: 'Successful',
-        detail: 'Product Created',
-        life: 3000
-      });
+  return obj;
+};
+
+const insertErrorField = ref();
+const saveProduct = async () => {
+  const value = insertModel.value;
+
+  const form = new FormData();
+
+  Object.keys(value).forEach((formKey) => {
+    form.append(formKey, value[formKey]);
+  });
+  console.log(Object.fromEntries(form), 'form');
+  let err;
+  const result = await axios.post('/product/create', form).catch((e) => {
+    err = e;
+  });
+
+  if (err) {
+    console.log(err);
+    const errorInstance = err.response.data;
+    if (errorInstance.code === 'ERR_CATEGORY_NOT_FOUND') {
+      insertErrorField.value = {
+        category: 'category not found'
+      };
+      return;
     }
-    productDialog.value = false;
-    product.value = {};
+    insertErrorField.value = errorMapper(errorInstance.error);
+    console.log(insertForm.value);
+    console.log(err.response.data.error);
   }
 };
 
@@ -355,39 +377,46 @@ const initFilters = () => {
             width="150"
             class="mt-0 mx-auto mb-5 block shadow-2"
           />
+
           <div class="field">
             <label for="name">Name</label>
-            <InputText
-              id="name"
-              v-model.trim="product.name"
-              required="true"
-              autofocus
-              :invalid="submitted && !product.name"
-            />
-            <small class="p-invalid" v-if="submitted && !product.name">Name is required.</small>
+            <InputText name="name" id="name" required="true" v-model="insertModel.name" />
+            <small class="p-invalid" v-if="insertErrorField?.name">{{
+              insertErrorField.name
+            }}</small>
           </div>
           <div class="field">
             <label for="description">Description</label>
             <Textarea
+              name="description"
               id="description"
-              v-model="product.description"
+              v-model="insertModel.description"
               required="true"
               rows="3"
               cols="20"
             />
+            <small class="p-invalid" v-if="insertErrorField?.description">{{
+              insertErrorField.description
+            }}</small>
           </div>
           <div class="field">
-            <label for="inventoryStatus" class="mb-3">Image</label>
-            <form action="/action_page.php">
-              <input type="file" id="myFile" name="filename" />
-            </form>
+            <div>
+              <label for="inventoryStatus" class="mb-3">Image</label>
+              <input
+                type="file"
+                id="myFile"
+                @change="handleOnchangeFile($event, insertModel.img)"
+                name="img"
+              />
+            </div>
+            <small class="p-invalid" v-if="insertErrorField?.img">img should be jpg,png</small>
           </div>
-
           <div class="field">
             <label class="mb-3">Category</label>
             <Dropdown
+              name="category"
               id="inventoryStatus"
-              v-model="product.inventoryStatus"
+              v-model="insertModel.category"
               :options="statuses"
               optionLabel="label"
               placeholder="Select a Status"
@@ -408,25 +437,32 @@ const initFilters = () => {
                 </span>
               </template>
             </Dropdown>
+            <small class="p-invalid" v-if="insertErrorField?.category">{{
+              insertErrorField.category
+            }}</small>
           </div>
-
           <div class="formgrid grid">
             <div class="field col">
               <label for="price">Price</label>
               <InputNumber
+                name="price"
                 id="price"
-                v-model="product.price"
                 mode="currency"
-                currency="USD"
+                v-model="insertModel.price"
+                currency="IDR"
                 locale="en-US"
-                :invalid="submitted && !product.price"
                 :required="true"
               />
-              <small class="p-invalid" v-if="submitted && !product.price">Price is required.</small>
+              <small class="p-invalid" v-if="insertErrorField?.price">{{
+                insertErrorField.price
+              }}</small>
             </div>
             <div class="field col">
-              <label for="quantity">Quantity</label>
-              <InputNumber id="quantity" v-model="product.quantity" integeronly />
+              <label for="quantity">Stock</label>
+              <InputNumber id="quantity" integeronly name="stock" v-model="insertModel.stock" />
+              <small class="p-invalid" v-if="insertErrorField?.stock">{{
+                insertErrorField.stock
+              }}</small>
             </div>
           </div>
           <template #footer>
