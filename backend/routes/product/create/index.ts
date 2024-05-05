@@ -1,6 +1,6 @@
-import { FastifyInstance, FastifyPluginAsync, FastifyError } from 'fastify';
+import { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
-import { z, ZodError } from 'zod';
+import { z } from 'zod';
 import path from 'node:path';
 import fs from 'node:fs';
 import { Readable } from 'node:stream';
@@ -9,7 +9,6 @@ import {
     serializerCompiler,
     ZodTypeProvider,
 } from 'fastify-type-provider-zod';
-import { ResponseSchema } from '@schema/http';
 import createError from '@fastify/error';
 import { createZodMultipart, createZodMultipartFile } from '@schema/multipart';
 const body = z.object({
@@ -20,9 +19,7 @@ const body = z.object({
     img: createZodMultipartFile(),
     stock: createZodMultipart(z.coerce.number()),
 });
-const paramsSchema = z.object({
-    id: z.coerce.number(),
-});
+
 async function register(server: FastifyInstance) {
     const nanoid = (await import('nanoid')).nanoid;
     server.setValidatorCompiler(validatorCompiler);
@@ -38,41 +35,6 @@ async function register(server: FastifyInstance) {
         ),
     };
 
-    route.setErrorHandler<
-        FastifyError,
-        {
-            Reply: ResponseSchema<{ error: ZodError | FastifyError }>;
-        }
-    >((error, _, res) => {
-        if (error instanceof ZodError) {
-            res.status(400).send({
-                data: null,
-                error: JSON.parse(error.message) as ZodError,
-                code: 'ERROR_VALIDATION',
-                message: 'Validation error',
-                success: false,
-            });
-            return;
-        }
-        type statusCode = Parameters<(typeof res)['status']>[0];
-
-        if (error instanceof TypeError) {
-            res.status((error.statusCode as statusCode) ?? 400).send({
-                data: null,
-                code: error.code,
-                message: error.message,
-                success: false,
-            });
-        }
-
-        res.status(422).send({
-            data: null,
-            code: 'ERROR_GENERIC',
-            message: 'Uncaugh Error',
-            error: error,
-            success: false,
-        });
-    });
     route.addHook<{ Body: z.infer<typeof body> }>('preHandler', async (req) => {
         const category = await server.prisma.productCategory.findFirst({
             where: {
@@ -88,15 +50,11 @@ async function register(server: FastifyInstance) {
 
         return;
     });
-    route.post<{
-        Body: z.infer<typeof body>;
-        Params: z.infer<typeof paramsSchema>;
-    }>(
+    route.post(
         '/product/create',
         {
             schema: {
                 body: body,
-                params: paramsSchema,
             },
         },
         async (req, res) => {
@@ -140,5 +98,4 @@ const cb: FastifyPluginAsync = async (server) => {
     server.register(register);
 };
 
-// export default fp(cb);
 export default fp(cb);

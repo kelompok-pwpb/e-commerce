@@ -20,8 +20,8 @@ const paramsSchema = z.object({
 });
 const cb: FastifyPluginAsync = async (server) => {
     const error = {
-        cartNotFound: createError('ERROR_CART_NOT_FOUND', '%s', 404),
-        cartCountExceed: createError('ERROR_CART_COUNT_EXCEED', '%s', 401),
+        cartNotFound: createError('ERR_CART_NOT_FOUND', '%s', 404),
+        cartCountExceed: createError('ERR_CART_COUNT_EXCEED', '%s', 401),
     };
     const route = server.withTypeProvider<ZodTypeProvider>();
     type routeGeneric = { Params: z.infer<typeof paramsSchema> };
