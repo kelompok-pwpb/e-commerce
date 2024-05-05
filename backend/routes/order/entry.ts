@@ -32,7 +32,7 @@ async function register(server: FastifyInstance) {
                     },
                 },
             });
-            res.status(201).send({
+            res.status(200).send({
                 message: 'Success retrieve order',
                 data: order,
                 success: true,
