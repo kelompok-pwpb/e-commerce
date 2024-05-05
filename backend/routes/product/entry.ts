@@ -24,27 +24,13 @@ const callback: FastifyPluginAsync = async (server: FastifyInstance) => {
     );
     const route = server.withTypeProvider<ZodTypeProvider>();
     const queryStringSchema = z.object({
-        count: z.number().max(20),
-        lastId: z.number().optional().nullable(),
+        count: z.coerce.number().max(20),
+        category: z.string().optional(),
+        search: z.string().optional(),
+        lastId: z.coerce.number().optional().nullable(),
     });
-    route.addHook<{ Querystring: z.infer<typeof queryStringSchema> }>(
-        'preValidation',
-        (req, _, done) => {
-            const value = Object.assign({}, req.query);
 
-            //check if NaN
-            value.count = parseInt(value.count.toString(), 10) || value.count;
-            value.lastId = value.lastId
-                ? undefined
-                : parseInt(value.count.toString(), 10) || value.lastId;
-            req.query = value;
-            done();
-        }
-    );
-    route.get<{
-        Querystring: z.infer<typeof queryStringSchema>;
-        Reply: z.infer<typeof searchResponse>;
-    }>(
+    route.get(
         '/product',
         {
             exposeHeadRoute: false,
@@ -72,32 +58,45 @@ const callback: FastifyPluginAsync = async (server: FastifyInstance) => {
                         },
                     },
                     where: {
+                        AND: [
+                            {
+                                productCategory: {
+                                    not: null,
+                                },
+                            },
+                            {
+                                productCategory: req.query.category,
+                            },
+                        ],
                         id: {
                             gt: req.query.lastId ?? -1,
                         },
-                        productCategory: {
-                            not: null,
+                        productInformation: {
+                            name: {
+                                startsWith: req.query.search,
+                            },
                         },
                     },
 
                     take: req.query.count,
                 })) ?? [];
-            const review = await server.prisma.review.groupBy({
-                by: ['productId'],
-                _avg: {
-                    rating: true,
-                },
-                where: {
-                    productId: {
-                        in: products.map((product) => product.id),
+            const review =
+                (await server.prisma.review.groupBy({
+                    by: ['productId'],
+                    _avg: {
+                        rating: true,
                     },
-                    product: {
-                        productCategory: {
-                            not: null,
+                    where: {
+                        productId: {
+                            in: products.map((product) => product.id),
+                        },
+                        product: {
+                            productCategory: {
+                                not: null,
+                            },
                         },
                     },
-                },
-            });
+                })) ?? [];
             const mappedReview = server.util.transformArrayObject(
                 review,
                 'productId'
@@ -115,12 +114,12 @@ const callback: FastifyPluginAsync = async (server: FastifyInstance) => {
             };
             const result: Result[] = products.map((product) => {
                 const rating =
-                    mappedReview[product.id as keyof typeof mappedReview][
+                    mappedReview[product.id as keyof typeof mappedReview]?.[
                         '_avg'
-                    ]['rating'];
+                    ]?.['rating'];
                 return {
                     ...product,
-                    rating: rating ?? 0,
+                    rating: rating ?? new Decimal(0),
                 };
             }) as Result[];
 
