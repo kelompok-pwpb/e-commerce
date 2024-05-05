@@ -40,6 +40,8 @@ export default tseslint.config(
             '@typescript-eslint/require-await': 'off',
             '@typescript-eslint/no-floating-promises': 'off',
             '@typescript-eslint/ban-types': 'off',
+            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-this-alias': 'off',
         },
         files: ['**/*.ts'],
     }
