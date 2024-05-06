@@ -1,24 +1,17 @@
 import fp from 'fastify-plugin';
-import { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import { FastifyPluginAsync } from 'fastify';
 import { createError } from '@fastify/error';
 import z from 'zod';
-import {
-    ZodTypeProvider,
-    validatorCompiler,
-    serializerCompiler,
-} from 'fastify-type-provider-zod';
+import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
-async function register(server: FastifyInstance) {
-    server.setValidatorCompiler(validatorCompiler);
-    server.setSerializerCompiler(serializerCompiler);
+const cb: FastifyPluginAsync = async (server) => {
     const route = server.withTypeProvider<ZodTypeProvider>();
     const error = {
-        productNotFound: createError('ERR_CART_NOT_FOUND', '%s', 404),
+        productNotFound: createError('ERR_CATEGORY_NOT_FOUND', '%s', 404),
     };
-
     route.delete(
-        '/cart/:id',
+        '/category/:id',
         {
             schema: {
                 params: z.object({
@@ -39,7 +32,7 @@ async function register(server: FastifyInstance) {
                     e.code === 'P2025'
                 ) {
                     throw new error.productNotFound(
-                        `cart with id ${req.params.id} not found`
+                        `category with id ${req.params.id} not found`
                     );
                 }
                 throw e;
@@ -50,9 +43,6 @@ async function register(server: FastifyInstance) {
             return res;
         }
     );
-}
-const cb: FastifyPluginAsync = async (server) => {
-    server.register(register);
 };
 export default fp(cb, {
     encapsulate: true,

@@ -7,6 +7,11 @@ const cb: FastifyPluginAsync = async (server) => {
         root: path.join(server.path.root.toString(), 'storage/product'),
         prefix: '/img/product',
     });
+    server.register(fastifyStatic, {
+        root: path.join(server.path.root.toString(), 'storage/user'),
+        prefix: '/img/user',
+        decorateReply: false,
+    });
 };
 
 export default fp(cb);

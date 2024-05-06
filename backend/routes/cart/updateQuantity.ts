@@ -25,7 +25,7 @@ const cb: FastifyPluginAsync = async (server) => {
     const route = server.withTypeProvider<ZodTypeProvider>();
     const error = {
         quantityExceed: createError(
-            'ERROR_QUANTITY_EXCEED',
+            'ERR_QUANTITY_EXCEED',
             'Quantity should no more than product stock',
             404
         ),
@@ -46,6 +46,9 @@ const cb: FastifyPluginAsync = async (server) => {
         const cart = await server.prisma.cart.findFirst({
             where: {
                 id: req.params.id,
+                product: {
+                    available: true,
+                },
             },
             include: {
                 product: {

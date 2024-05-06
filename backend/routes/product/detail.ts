@@ -30,6 +30,7 @@ const cb: FastifyPluginAsync = async (server) => {
             const product = await server.prisma.product.findFirst({
                 where: {
                     id: req.params.id,
+                    available: true,
                 },
                 include: {
                     productInformation: true,

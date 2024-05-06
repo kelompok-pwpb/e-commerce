@@ -32,6 +32,7 @@ const cb: FastifyPluginAsync = async (server) => {
                     id: {
                         in: req.query.id ?? null,
                     },
+                    available: true,
                 },
                 include: {
                     productInformation: true,

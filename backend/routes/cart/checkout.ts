@@ -20,8 +20,8 @@ const paramsSchema = z.object({
 });
 const cb: FastifyPluginAsync = async (server) => {
     const error = {
-        cartNotFound: createError('ERROR_CART_NOT_FOUND', '%s', 404),
-        cartCountExceed: createError('ERROR_CART_COUNT_EXCEED', '%s', 401),
+        cartNotFound: createError('ERR_CART_NOT_FOUND', '%s', 404),
+        cartCountExceed: createError('ERR_CART_COUNT_EXCEED', '%s', 401),
     };
     const route = server.withTypeProvider<ZodTypeProvider>();
     type routeGeneric = { Params: z.infer<typeof paramsSchema> };
@@ -32,6 +32,9 @@ const cb: FastifyPluginAsync = async (server) => {
         const cart = await server.prisma.cart.findFirst({
             where: {
                 id: req.params.cartId,
+                product: {
+                    available: true,
+                },
             },
             include: {
                 product: {
@@ -75,8 +78,24 @@ const cb: FastifyPluginAsync = async (server) => {
                     count: cart.count,
                     status: 'arrived',
                 },
+                include: {
+                    product: {
+                        include: {
+                            productInformation: true,
+                        },
+                    },
+                },
             });
 
+            await server.prisma.productInformation.update({
+                where: {
+                    productId: cart.productId,
+                },
+                data: {
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                    stock: 1 - order!.product!.productInformation!.stock,
+                },
+            });
             await server.prisma.cart.delete({
                 where: {
                     id: cart.id,

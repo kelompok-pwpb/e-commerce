@@ -76,6 +76,7 @@ const callback: FastifyPluginAsync = async (server: FastifyInstance) => {
                                 startsWith: req.query.search,
                             },
                         },
+                        available: true,
                     },
 
                     take: req.query.count,

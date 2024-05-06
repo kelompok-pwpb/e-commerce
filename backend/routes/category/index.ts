@@ -1,16 +1,12 @@
 import fp from 'fastify-plugin';
 import { FastifyPluginAsync } from 'fastify';
+
 import entry from './entry';
-import checkout from './checkout';
-import updateQuantity from './updateQuantity';
-import deleteCart from './deleteCart';
 import add from './add';
+import deleteCategory from './deleteCategory';
 const cb: FastifyPluginAsync = async (server) => {
     server.register(entry);
-    server.register(checkout);
-    server.register(updateQuantity);
-    server.register(deleteCart);
     server.register(add);
+    server.register(deleteCategory);
 };
-
 export default fp(cb);

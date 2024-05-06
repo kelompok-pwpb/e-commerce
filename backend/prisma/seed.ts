@@ -39,6 +39,7 @@ async function createCustomUser() {
                 'YOGI123',
                 parseInt(process.env.BCRYPT_SALT as string)
             ),
+            avatar: await createUserImg(),
         },
     });
 }
@@ -57,6 +58,7 @@ async function createImg() {
         'storage/product',
         `${nanoid()}.${extension}`
     );
+    const url = 'img/product';
     const writeStream = fs.createWriteStream(
         path.join(appRootPath.toString(), storagePath)
     );
@@ -65,7 +67,28 @@ async function createImg() {
         console.log(err);
     });
 
-    return storagePath;
+    return url;
+}
+
+async function createUserImg() {
+    const nanoid = (await import('nanoid')).nanoid;
+    const fileType = await import('file-type');
+    const response = await fetch(faker.image.avatar());
+    const responseBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(responseBuffer);
+    const extension =
+        (await fileType.fileTypeFromBuffer(responseBuffer))?.ext || 'jpg';
+    const readable = Readable.from(buffer);
+    const storagePath = path.join('storage/user', `${nanoid()}.${extension}`);
+    const writeStream = fs.createWriteStream(
+        path.join(appRootPath.toString(), storagePath)
+    );
+    const url = 'img/user';
+    readable.pipe(writeStream).on('error', (err) => {
+        console.log(err);
+    });
+
+    return url;
 }
 async function productCategory() {
     const category: string[] = [
@@ -145,6 +168,7 @@ async function user() {
                         faker.internet.password(),
                         parseInt(process.env.BCRYPT_SALT as string)
                     ),
+                    avatar: await createUserImg(),
                 };
             })
         ),

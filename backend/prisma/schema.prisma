@@ -32,7 +32,7 @@ model User {
   review Review[]
   order Order[]
   token Token[]
-
+  avatar String @db.VarChar(255)
   @@map("users")
 }
 
