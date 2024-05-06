@@ -59,6 +59,7 @@ async function register(server: FastifyInstance) {
                         body.password,
                         parseInt(process.env.BCRYPT_SALT as string)
                     ),
+                    avatar: '/',
                 },
             });
 

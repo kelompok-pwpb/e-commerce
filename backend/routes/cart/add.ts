@@ -87,6 +87,13 @@ const cb: FastifyPluginAsync = async (server) => {
                     productId: body.productId,
                     count: 0,
                 },
+                include: {
+                    product: {
+                        include: {
+                            productInformation: true,
+                        },
+                    },
+                },
             });
             res.status(200).send({
                 data: cart,

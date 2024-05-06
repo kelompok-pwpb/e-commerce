@@ -11,6 +11,7 @@ import {
 } from 'fastify-type-provider-zod';
 import createError from '@fastify/error';
 import { createZodMultipart, createZodMultipartFile } from '@schema/multipart';
+import { createResponseSchema } from '@schema/http';
 const body = z.object({
     description: createZodMultipart(z.string()),
     name: createZodMultipart(z.string()),
@@ -55,14 +56,16 @@ async function register(server: FastifyInstance) {
         {
             schema: {
                 body: body,
+                response: {
+                    '2xx': createResponseSchema(z.instanceof(Object)),
+                },
             },
         },
         async (req, res) => {
             const img = req.body.img;
             const extension = img.mimetype.split('/')[1];
             const imgPath = path.join(
-                server.path.root.toString(),
-                'storage/product',
+                'img/product',
                 `${nanoid()}.${extension}`
             );
             const writeStream = fs.createWriteStream(imgPath);
@@ -72,7 +75,7 @@ async function register(server: FastifyInstance) {
             });
             const body = req.body;
 
-            await server.prisma.product.create({
+            const createdProduct = await server.prisma.product.create({
                 data: {
                     productInformation: {
                         create: {
@@ -86,9 +89,16 @@ async function register(server: FastifyInstance) {
                     productCategory: body.category.value,
                     available: true,
                 },
+                include: {
+                    productInformation: true,
+                },
             });
 
-            res.status(204).send();
+            res.status(200).send({
+                message: 'Success creating data',
+                data: createdProduct,
+                success: true,
+            });
 
             return;
         }

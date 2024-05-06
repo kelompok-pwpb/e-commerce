@@ -87,10 +87,7 @@ async function register(server: FastifyInstance) {
                     path.join(server.path.root.toString(), oldImg.img)
                 );
                 const extension = img.mimetype.split('/')[1];
-                imgPath = path.join(
-                    'storage/product',
-                    `${nanoid()}.${extension}`
-                );
+                imgPath = path.join('img/product', `${nanoid()}.${extension}`);
                 const writeStream = fs.createWriteStream(imgPath);
                 const read = Readable.from(img.value);
                 read.pipe(writeStream).addListener('error', (err) => {

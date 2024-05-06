@@ -78,8 +78,24 @@ const cb: FastifyPluginAsync = async (server) => {
                     count: cart.count,
                     status: 'arrived',
                 },
+                include: {
+                    product: {
+                        include: {
+                            productInformation: true,
+                        },
+                    },
+                },
             });
 
+            await server.prisma.productInformation.update({
+                where: {
+                    productId: cart.productId,
+                },
+                data: {
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                    stock: 1 - order!.product!.productInformation!.stock,
+                },
+            });
             await server.prisma.cart.delete({
                 where: {
                     id: cart.id,

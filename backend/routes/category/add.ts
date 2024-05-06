@@ -31,16 +31,22 @@ const cb: FastifyPluginAsync = async (server) => {
         },
         async (req, res) => {
             try {
-                await server.prisma.productCategory.create({
+                const category = await server.prisma.productCategory.create({
                     data: {
                         name: req.body.name,
                     },
                 });
+
+                res.status(200).send({
+                    message: 'success creating data',
+                    success: true,
+                    data: category,
+                });
+
+                return res;
             } catch (e) {
                 throw new error.categoryAlreadyUsed();
             }
-
-            res.status(204).send();
         }
     );
 };
