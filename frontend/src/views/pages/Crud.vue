@@ -4,6 +4,7 @@ import { ref, defineModel, onMounted, onBeforeMount } from 'vue';
 import { ProductService } from '@/service/ProductService';
 import { useToast } from 'primevue/usetoast';
 import axios from 'axios';
+import 'primeflex/primeflex.scss';
 
 const insertForm = ref();
 const toast = useToast();
@@ -26,6 +27,7 @@ const handleOnchangeFile = (e) => {
 // const send =
 const products = ref(null);
 const productDialog = ref(false);
+const productCategory = ref(false);
 const deleteProductDialog = ref(false);
 const deleteProductsDialog = ref(false);
 const product = ref({});
@@ -59,6 +61,7 @@ const getBadgeSeverity = (inventoryStatus) => {
   }
 };
 
+
 onBeforeMount(() => {
   initFilters();
 });
@@ -77,6 +80,16 @@ const openNew = () => {
 
 const hideDialog = () => {
   productDialog.value = false;
+  submitted.value = false;
+};
+const openCategory = () => {
+  product.value = {};
+  submitted.value = false;
+  productCategory.value = true;
+};
+
+const hideDialogCategory = () => {
+  productCategory.value = false;
   submitted.value = false;
 };
 const errorMapper = (error) => {
@@ -191,6 +204,13 @@ const initFilters = () => {
                 @click="openNew"
               />
               <Button
+                label="Category"
+                icon="pi pi-plus"
+                class="mr-2"
+                severity="warning"
+                @click="openCategory"
+              />
+              <Button
                 label="Delete"
                 icon="pi pi-trash"
                 severity="danger"
@@ -228,14 +248,6 @@ const initFilters = () => {
               class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
             >
               <h5 class="m-0">Manage Products</h5>
-              <IconField iconPosition="left" class="block mt-2 md:mt-0">
-                <InputIcon class="pi pi-search" />
-                <InputText
-                  class="w-full sm:w-auto"
-                  v-model="filters['global'].value"
-                  placeholder="Search..."
-                />
-              </IconField>
             </div>
           </template>
 
@@ -362,6 +374,22 @@ const initFilters = () => {
           </ColumnGroup>
         </DataTable>
         <div>shjdbsdjk</div>
+
+        <Dialog 
+        v-model:visible="productCategory"
+        :style="{width: '450px'}"
+        header="Category"
+        :modal="true"
+        class="p-fluid">
+
+        <div class="field">
+            <label for="name">Name</label>
+            <InputText name="name" id="name" required="true" v-model="insertModel.name" />
+            <small class="p-invalid" v-if="insertErrorField?.name">{{
+              insertErrorField.name
+            }}</small>
+          </div>
+      </Dialog>
 
         <Dialog
           v-model:visible="productDialog"

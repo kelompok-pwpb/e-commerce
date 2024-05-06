@@ -52,7 +52,7 @@
   width: 90%;
   border-radius: 8px;
   height: 5px;
-  top: 3020px;
+  margin-top: 30%;
   left: 5%;
 }
 .text-detail {
