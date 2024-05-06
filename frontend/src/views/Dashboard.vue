@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from 'vue';
 import { ProductService } from '@/service/ProductService';
 import { useLayout } from '@/layout/composables/layout';
+import 'primeflex/primeflex.scss';
 
 const { isDarkTheme } = useLayout();
 
