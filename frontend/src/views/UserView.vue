@@ -1,11 +1,13 @@
 <script>
 import MainNavigation from '@/components/NavBar.vue';
 import FirstSlider from '@/components/FirstSlider.vue';
+import MainFooter from '@/components/MainFooter.vue';
 
 export default {
   components: {
     Navigation: MainNavigation,
-    Slider: FirstSlider
+    Slider: FirstSlider,
+    Footer: MainFooter
   }
 };
 </script>
@@ -65,13 +67,53 @@ export default {
       <div class="text-head">Make Your Own Style</div>
       <h3>Balinesse</h3>
     </div>
+    <div class="order-now container-fluid">
+      <div class="model py-3">
+        <div class="row">
+          <div class="col-lg-5 d-flex justify-content-end pt-5 px-5">
+            <div class="model1 justify-content-end d-flex">
+              <img src="@/assets/img/model/Model1.jpg" alt="" width="70%" />
+            </div>
+          </div>
+          <div
+            class="col-lg-7 d-flex align-items-start flex-column justify-content-center text-model"
+          >
+            <h3>Make Yourself Beautiful</h3>
+            <p>
+              Baliness Style is not just a common style, it is a fashion and art of the Baliness
+              People. This Style is not just only for Baliness People of course, but the style can
+              go international
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div
+            class="col-lg-7 d-flex align-items-end flex-column justify-content-center text-model2"
+          >
+            <h3>Hot Style in The World</h3>
+            <p>
+              Baliness Style is Cool for a Man, and so Beautiful for Woman. The Pattern of Baliness
+              style is so complicated, that's why our style is so Rare Find.
+            </p>
+          </div>
+          <div class="col-lg-5 d-flex justify-content-start py-5 px-5">
+            <div class="model1">
+              <img src="@/assets/img/model/Model2.jpeg" alt="" width="70%" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="product">
-      <div class="product-title text-center py-5">
-        <h3><strong>Discover</strong> <br />Our Most Popular Product</h3>
+      <div class="product-title">
+        <div class="text-title">Discover</div>
+        <h3>Our Product</h3>
       </div>
       <Slider />
     </div>
   </section>
+
+  <Footer />
 </template>
 <style scoped>
 .hero {
@@ -181,34 +223,67 @@ export default {
 }
 .product-head h3 {
   font-family: 'courgette', sans-serif;
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #cf0a0a;
+  margin: 0px;
 }
 .product-title {
   font-family: 'poppins', sans-serif;
-}
-.product-title::before {
-  position: absolute;
-  content: '';
-  background-color: black;
-  width: 15%;
-  border-radius: 8px;
-  height: 4px;
-  left: 50%;
-  top: 1130px;
-  transform: translate(-50%, -100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(@/assets/img/temple.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 60px 0px;
+  transition: all 500ms;
+  background-attachment: fixed;
 }
 .product-title h3 {
   font-weight: 600;
-}
-.product-title strong {
-  font-family: 'courgette', sans-serif;
-  font-size: 2rem;
-  color: #dc5f00;
+  font-size: 2.6rem;
+  color: white;
+  margin: 0px;
 }
 .product-bg {
   background: #fcf5ed;
 }
+.model1 {
+  overflow: hidden;
+  border-radius: 15px;
+}
+.model1 img {
+  overflow: hidden;
+  border-radius: 15px;
+  aspect-ratio: 1/1;
+  transition: all 500ms;
+}
+.model1 img:hover {
+  transform: scale(1.1);
+}
+.text-model p {
+  width: 60%;
+  font-size: 1.3rem;
+}
+.text-model2 p {
+  text-align: end;
+  width: 60%;
+  font-size: 1.3rem;
+}
+.text-model h3 {
+  font-size: 2.6rem;
+}
+.text-model2 h3 {
+  font-size: 2.6rem;
+}
+.text-title {
+  font-family: 'courgette', sans-serif;
+  font-size: 2rem;
+  color: #dc5f00;
+}
+
 /* SVG animations */
 @keyframes color_anim {
   0% {

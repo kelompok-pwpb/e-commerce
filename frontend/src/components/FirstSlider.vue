@@ -48,7 +48,7 @@ onUnmounted(() => {
         <div ref="content" class="content">
           <div class="sub-content py-3 d-flex flex-column align-items-center">
             <img src="@/assets/img/slider1/Kamen1.png" class="item" />
-            <h5>Saput Songket</h5>
+            <h5>Saput Songket & Udeng</h5>
             <div class="star">
               <i class="bi bi-star-fill"></i>
               <i class="bi bi-star-fill"></i>
@@ -62,7 +62,7 @@ onUnmounted(() => {
           </div>
           <div class="sub-content py-3 d-flex flex-column align-items-center">
             <img src="@/assets/img/slider1/Kamen2.png" class="item" />
-            <h5>Saput Songket</h5>
+            <h5>Saput Songket & Udeng</h5>
             <div class="star">
               <i class="bi bi-star-fill"></i>
               <i class="bi bi-star-fill"></i>
@@ -76,7 +76,7 @@ onUnmounted(() => {
           </div>
           <div class="sub-content py-3 d-flex flex-column align-items-center">
             <img src="@/assets/img/slider1/Kamen3.png" class="item" />
-            <h5>Saput Songket</h5>
+            <h5>Saput Songket & Udeng</h5>
             <div class="star">
               <i class="bi bi-star-fill"></i>
               <i class="bi bi-star-fill"></i>
@@ -90,7 +90,7 @@ onUnmounted(() => {
           </div>
           <div class="sub-content py-3 d-flex flex-column align-items-center">
             <img src="@/assets/img/slider1/Kamen4.png" class="item" />
-            <h5>Saput Songket</h5>
+            <h5>Saput Songket & Udeng</h5>
             <div class="star">
               <i class="bi bi-star-fill"></i>
               <i class="bi bi-star-fill"></i>
@@ -104,7 +104,7 @@ onUnmounted(() => {
           </div>
           <div class="sub-content py-3 d-flex flex-column align-items-center">
             <img src="@/assets/img/slider1/Kamen5.png" class="item" />
-            <h5>Saput Songket</h5>
+            <h5>Saput Songket & Udeng</h5>
             <div class="star">
               <i class="bi bi-star-fill"></i>
               <i class="bi bi-star-fill"></i>
@@ -118,7 +118,7 @@ onUnmounted(() => {
           </div>
           <div class="sub-content py-3 d-flex flex-column align-items-center">
             <img src="@/assets/img/slider1/Kamen6.png" class="item" />
-            <h5>Saput Songket</h5>
+            <h5>Saput Songket & Udeng</h5>
             <div class="star">
               <i class="bi bi-star-fill"></i>
               <i class="bi bi-star-fill"></i>
@@ -132,7 +132,7 @@ onUnmounted(() => {
           </div>
           <div class="sub-content py-3 d-flex flex-column align-items-center">
             <img src="@/assets/img/slider1/Kamen1.png" class="item" />
-            <h5>Saput Songket</h5>
+            <h5>Saput Songket & Udeng</h5>
             <div class="star">
               <i class="bi bi-star-fill"></i>
               <i class="bi bi-star-fill"></i>
@@ -147,7 +147,7 @@ onUnmounted(() => {
           <div class="sub-content d-flex flex-column align-items-center">
             <div class="px-5 py-3">
               <img src="@/assets/img/slider1/Kamen2.png" class="item" />
-              <h5>Saput Songket</h5>
+              <h5>Saput Songket & Udeng</h5>
               <div class="star text-center">
                 <i class="bi bi-star-fill"></i>
                 <i class="bi bi-star-fill"></i>

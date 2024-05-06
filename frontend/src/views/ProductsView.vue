@@ -172,9 +172,7 @@ export default {
   font-weight: 600;
 }
 
-.products {
-  /* background-color: hsl(32, 71%, 96%); */
-}
+
 
 .button{
   background-color: #DC5F00;
